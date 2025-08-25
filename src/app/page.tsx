@@ -8,18 +8,20 @@ import ExpenseBreakdownChart from "@/components/charts/expense-breakdown-chart";
 import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/dashboard-layout";
+import { useEffect } from "react";
 
 export default function Home() {
     const { user, loading } = useAuth();
     const router = useRouter();
 
-    if(loading) {
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/auth/login");
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user) {
         return <div>Loading...</div>
-    }
-    
-    if(!user) {
-        router.push("/auth/login");
-        return null;
     }
 
   return (

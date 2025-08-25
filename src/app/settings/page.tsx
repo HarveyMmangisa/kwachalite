@@ -1,24 +1,38 @@
-
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export default function SettingsPage() {
   return (
-    <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
+    <div className="flex-1 space-y-6 p-6 sm:p-10 pt-8 bg-background">
+      {/* Page Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-          <p className="text-muted-foreground">Manage your application settings.</p>
+          <h2 className="text-3xl font-semibold tracking-tight">Settings</h2>
+          <p className="text-muted-foreground text-base">
+            Manage and customize your application preferences.
+          </p>
         </div>
       </div>
-      <Card>
+
+      {/* Under Construction Notice */}
+      <Card className="border border-muted shadow-sm">
         <CardHeader>
-          <CardTitle>Settings</CardTitle>
-          <CardDescription>This page is under construction.</CardDescription>
+          <CardTitle className="text-xl font-medium">Page Under Construction</CardTitle>
+          <CardDescription>
+            We’re working on this section to improve your experience.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-            <p>Come back later!</p>
+        <CardContent className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground">
+            Please check back soon. In the meantime, you can continue using other features.
+          </p>
+          <div>
+            <Button variant="outline" className="text-sm">
+              Back to Dashboard
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
