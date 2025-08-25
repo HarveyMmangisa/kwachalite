@@ -6,6 +6,7 @@ import { Download, Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
 
 // Dummy data for the quotation
 const quotation = {
@@ -27,7 +28,8 @@ const quotation = {
       name: "Kwacha Quick Inc.",
       address: "456 Tech Park, Zomba, Malawi",
       email: "billing@kwachaquick.com",
-      logoUrl: "https://placehold.co/150x50.png"
+      logoUrl: "https://placehold.co/150x50.png",
+      termsAndConditions: "All services require a 50% deposit before work commences. The remaining balance is due upon completion."
   }
 };
 
@@ -125,11 +127,18 @@ export default function ViewQuotationPage({ params }: { params: { id: string } }
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-0 mt-8">
-             <div>
+        <CardFooter className="flex-col items-start p-0 mt-8">
+            <Separator className="mb-4" />
+             <div className="w-full">
                 <h4 className="font-semibold mb-2">Notes</h4>
-                <p className="text-muted-foreground">{quotation.notes}</p>
+                <p className="text-muted-foreground text-sm">{quotation.notes}</p>
             </div>
+            {quotation.company.termsAndConditions && (
+                <div className="w-full mt-4">
+                    <h4 className="font-semibold mb-2">Terms & Conditions</h4>
+                    <p className="text-muted-foreground text-sm">{quotation.company.termsAndConditions}</p>
+                </div>
+            )}
         </CardFooter>
       </Card>
     </div>

@@ -19,6 +19,7 @@ const businessDetailsFormSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   logoUrl: z.string().url("Invalid URL").optional().or(z.literal('')),
+  termsAndConditions: z.string().optional(),
 })
 
 type BusinessDetailsFormValues = z.infer<typeof businessDetailsFormSchema>
@@ -32,6 +33,7 @@ export default function BusinessDetailsPage() {
       email: "billing@kwachaquick.com",
       phone: "+265 1 234 567",
       logoUrl: "https://placehold.co/150x50.png",
+      termsAndConditions: "All services require a 50% deposit before work commences. The remaining balance is due upon completion.",
     },
   })
 
@@ -137,6 +139,19 @@ export default function BusinessDetailsPage() {
                         </div>
                     </div>
                 )}
+                <FormField
+                control={form.control}
+                name="termsAndConditions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Terms & Conditions</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter your terms and conditions or other notes for the quotation." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit">Save Details</Button>
             </form>
           </Form>
