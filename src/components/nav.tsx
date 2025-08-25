@@ -1,8 +1,9 @@
+
 "use client"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, ArrowRightLeft, BarChart3, Settings, Briefcase, Users, Package, FileText, ChevronDown } from "lucide-react"
+import { LayoutDashboard, ArrowRightLeft, BarChart3, Settings, Briefcase, Users, Package, FileText, ChevronDown, Building2 } from "lucide-react"
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import * as React from "react"
@@ -19,6 +20,7 @@ const mainNavItems = [
 
 const businessNavItems = [
     { href: "/business", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/business/details", label: "Details", icon: Building2 },
     { href: "/business/clients", label: "Clients", icon: Users },
     { href: "/business/products", label: "Products", icon: Package },
     { href: "/business/quotations", label: "Quotations", icon: FileText },

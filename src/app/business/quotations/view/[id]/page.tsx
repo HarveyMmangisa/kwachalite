@@ -1,9 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 // Dummy data for the quotation
 const quotation = {
@@ -24,7 +26,8 @@ const quotation = {
   company: {
       name: "Kwacha Quick Inc.",
       address: "456 Tech Park, Zomba, Malawi",
-      email: "billing@kwachaquick.com"
+      email: "billing@kwachaquick.com",
+      logoUrl: "https://placehold.co/150x50.png"
   }
 };
 
@@ -53,7 +56,12 @@ export default function ViewQuotationPage({ params }: { params: { id: string } }
         <CardHeader className="p-0 mb-8">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-4xl font-bold text-primary">{quotation.company.name}</h1>
+                    {quotation.company.logoUrl && (
+                        <div className="mb-4 relative h-12 w-36">
+                            <Image src={quotation.company.logoUrl} alt={quotation.company.name} layout="fill" objectFit="contain" data-ai-hint="logo" />
+                        </div>
+                    )}
+                    <h1 className="text-2xl font-bold text-primary">{quotation.company.name}</h1>
                     <p className="text-muted-foreground">{quotation.company.address}</p>
                     <p className="text-muted-foreground">{quotation.company.email}</p>
                 </div>
