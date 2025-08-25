@@ -9,19 +9,21 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  "projectId": "kwachalite-ha6p0",
+  "appId": "1:69452420607:web:fa4a8fb53d156440ec43ca",
+  "storageBucket": "kwachalite-ha6p0.firebasestorage.app",
+  "apiKey": "AIzaSyDS_BZa1lluc0CbrH-a7XqR-gDf8uH1aKA",
+  "authDomain": "kwachalite-ha6p0.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "69452420607"
 };
 
 // Initialize Firebase
 let app;
 if (!getApps().length) {
     app = initializeApp(firebaseConfig);
+} else {
+    app = getApps()[0];
 }
 
 const auth = getAuth(app);
