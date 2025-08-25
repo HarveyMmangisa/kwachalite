@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { getClient, updateClient } from "@/lib/db/clients"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -24,7 +24,8 @@ const clientFormSchema = z.object({
 
 type ClientFormValues = z.infer<typeof clientFormSchema>
 
-export default function EditClientPage({ params }: { params: { id: string } }) {
+export default function EditClientPage() {
+    const params = useParams();
     const router = useRouter();
   
     const form = useForm<ClientFormValues>({
@@ -38,16 +39,20 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
     });
 
     useEffect(() => {
-        getClient(params.id).then(client => {
-            if (client) {
-                form.reset(client);
-            }
-        })
+        if (params.id) {
+            getClient(params.id as string).then(client => {
+                if (client) {
+                    form.reset(client);
+                }
+            })
+        }
     }, [params.id, form]);
 
   async function onSubmit(data: ClientFormValues) {
-    await updateClient(params.id, data);
-    router.push("/business/clients");
+    if (params.id) {
+        await updateClient(params.id as string, data);
+        router.push("/business/clients");
+    }
   }
 
   return (
@@ -60,7 +65,7 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
         </Button>
         <div>
             <h2 className="text-3xl font-bold tracking-tight">Edit Client</h2>
-            <p className="text-muted-foreground">Update the client's details.</p>
+            <p className="text-muted-foreground">Update the client&apos;s details.</p>
         </div>
       </div>
       <Card>

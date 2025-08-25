@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { useParams } from "next/navigation"
 
 const productFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,7 +23,8 @@ const productFormSchema = z.object({
 
 type ProductFormValues = z.infer<typeof productFormSchema>
 
-export default function EditProductPage({ params }: { params: { id: string } }) {
+export default function EditProductPage() {
+  const params = useParams()
   const productData = {
     name: "Web Design",
     description: "Responsive web design services",
@@ -48,7 +50,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 </Link>
             </Button>
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Edit Product {params.id}</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Edit Product {params.id as string}</h2>
                 <p className="text-muted-foreground">Update the product or service details.</p>
             </div>
         </div>
