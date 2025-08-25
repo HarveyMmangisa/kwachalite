@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { signup } from "@/lib/auth"
 import { authErrorMessages } from "@/lib/auth-errors"
+import { authErrorMessages } from "@/lib/auth-errors"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
@@ -52,9 +53,10 @@ export default function SignupPage() {
             });
             router.push("/");
         } catch (error: any) {
+            const errorMessage = authErrorMessages[error.code] || error.message;
             toast({
                 title: "Error",
-                description: error.message,
+                description: errorMessage,
                 variant: "destructive"
             })
         } finally {
