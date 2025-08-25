@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { useEffect, useState } from "react"
+import { getClient, updateClient } from "@/lib/db/clients"
+import { useRouter } from "next/navigation"
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,21 +25,29 @@ const clientFormSchema = z.object({
 type ClientFormValues = z.infer<typeof clientFormSchema>
 
 export default function EditClientPage({ params }: { params: { id: string } }) {
-  // In a real app, you would fetch the client data based on the id
-  const clientData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 234 567 890",
-    status: "Active" as "Active" | "Inactive",
-  }
+    const router = useRouter();
+  
+    const form = useForm<ClientFormValues>({
+        resolver: zodResolver(clientFormSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            phone: "",
+            status: "Active",
+        },
+    });
 
-  const form = useForm<ClientFormValues>({
-    resolver: zodResolver(clientFormSchema),
-    defaultValues: clientData,
-  })
+    useEffect(() => {
+        getClient(params.id).then(client => {
+            if (client) {
+                form.reset(client);
+            }
+        })
+    }, [params.id, form]);
 
-  function onSubmit(data: ClientFormValues) {
-    console.log(data)
+  async function onSubmit(data: ClientFormValues) {
+    await updateClient(params.id, data);
+    router.push("/business/clients");
   }
 
   return (
@@ -48,7 +59,7 @@ export default function EditClientPage({ params }: { params: { id: string } }) {
             </Link>
         </Button>
         <div>
-            <h2 className="text-3xl font-bold tracking-tight">Edit Client {params.id}</h2>
+            <h2 className="text-3xl font-bold tracking-tight">Edit Client</h2>
             <p className="text-muted-foreground">Update the client's details.</p>
         </div>
       </div>

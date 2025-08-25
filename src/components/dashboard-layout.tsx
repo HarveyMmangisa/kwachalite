@@ -23,9 +23,28 @@ import { LogOut } from "lucide-react";
 import Header from "./header";
 import { BottomNavbar } from "./bottom-navbar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { logout } from "@/lib/auth";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const isMobile = useIsMobile();
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
+    if(!user) {
+        router.push("/auth/login");
+        return null;
+    }
+
+    const handleLogout = async () => {
+        await logout();
+        router.push("/auth/login");
+    }
 
   return (
     <SidebarProvider>
@@ -59,26 +78,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="justify-start w-full gap-2 p-2 h-auto">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="https://placehold.co/40x40.png" alt="@shadcn" data-ai-hint="person avatar"/>
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarImage src={user.photoURL || "https://placehold.co/40x40.png"} alt="user avatar" data-ai-hint="person avatar"/>
+                      <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="text-left">
-                      <p className="text-sm font-medium">John Doe</p>
-                      <p className="text-xs text-muted-foreground">john.doe@example.com</p>
+                      <p className="text-sm font-medium">{user.displayName || 'User'}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 mb-2" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">John Doe</p>
+                      <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        john.doe@example.com
+                        {user.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>

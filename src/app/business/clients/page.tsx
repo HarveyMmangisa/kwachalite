@@ -1,3 +1,6 @@
+
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -5,8 +8,28 @@ import { PlusCircle, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Client, getClients } from "@/lib/db/clients";
+import { useAuth } from "@/hooks/use-auth";
+import { deleteClient } from "@/lib/db/clients";
 
 export default function ClientsPage() {
+    const { user } = useAuth();
+    const [clients, setClients] = useState<Client[]>([]);
+
+    useEffect(() => {
+        if (user) {
+            getClients(user.uid).then(setClients);
+        }
+    }, [user]);
+
+    const handleDelete = async (id: string) => {
+        if(user) {
+            await deleteClient(id);
+            setClients(clients.filter(c => c.id !== id));
+        }
+    }
+
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -39,48 +62,30 @@ export default function ClientsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">John Doe</TableCell>
-                <TableCell>john.doe@example.com</TableCell>
-                <TableCell>+1 234 567 890</TableCell>
-                <TableCell><Badge>Active</Badge></TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem asChild><Link href="/business/clients/edit/1">Edit</Link></DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-               <TableRow>
-                <TableCell className="font-medium">Jane Smith</TableCell>
-                <TableCell>jane.smith@example.com</TableCell>
-                <TableCell>+1 987 654 321</TableCell>
-                <TableCell><Badge variant="secondary">Inactive</Badge></TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                       <DropdownMenuItem asChild><Link href="/business/clients/edit/2">Edit</Link></DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
+                {clients.map(client => (
+                    <TableRow key={client.id}>
+                        <TableCell className="font-medium">{client.name}</TableCell>
+                        <TableCell>{client.email}</TableCell>
+                        <TableCell>{client.phone}</TableCell>
+                        <TableCell><Badge variant={client.status === 'Active' ? 'default' : 'secondary'}>{client.status}</Badge></TableCell>
+                        <TableCell>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                            </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem asChild><Link href={`/business/clients/edit/${client.id}`}>Edit</Link></DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDelete(client.id!)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        </TableCell>
+                    </TableRow>
+                ))}
+             
             </TableBody>
           </Table>
         </CardContent>

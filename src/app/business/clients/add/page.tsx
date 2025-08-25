@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
+import { addClient } from "@/lib/db/clients"
+import { useRouter } from "next/navigation"
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,6 +25,8 @@ const clientFormSchema = z.object({
 type ClientFormValues = z.infer<typeof clientFormSchema>
 
 export default function AddClientPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientFormSchema),
     defaultValues: {
@@ -32,8 +37,11 @@ export default function AddClientPage() {
     },
   })
 
-  function onSubmit(data: ClientFormValues) {
-    console.log(data)
+  async function onSubmit(data: ClientFormValues) {
+    if(user) {
+        await addClient(user.uid, data);
+        router.push("/business/clients");
+    }
   }
 
   return (
