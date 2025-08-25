@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PlusCircle, MoreHorizontal, Download, Mail } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function QuotationsPage() {
   return (
@@ -14,8 +15,10 @@ export default function QuotationsPage() {
           <p className="text-muted-foreground">Create and manage your quotations.</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" /> Create Quotation
+          <Button asChild>
+            <Link href="/business/quotations/create">
+              <PlusCircle className="mr-2 h-4 w-4" /> Create Quotation
+            </Link>
           </Button>
         </div>
       </div>
@@ -53,8 +56,8 @@ export default function QuotationsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>View</DropdownMenuItem>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/quotations/view/1">View</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/quotations/edit/1">Edit</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem><Download className="mr-2 h-4 w-4" /> Download PDF</DropdownMenuItem>
                       <DropdownMenuItem><Mail className="mr-2 h-4 w-4" /> Email to Client</DropdownMenuItem>
@@ -80,8 +83,8 @@ export default function QuotationsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>View</DropdownMenuItem>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/quotations/view/2">View</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/quotations/edit/2">Edit</Link></DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem><Download className="mr-2 h-4 w-4" /> Download PDF</DropdownMenuItem>
                       <DropdownMenuItem><Mail className="mr-2 h-4 w-4" /> Email to Client</DropdownMenuItem>

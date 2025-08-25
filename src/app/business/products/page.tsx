@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PlusCircle, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function ProductsPage() {
   return (
@@ -14,8 +15,10 @@ export default function ProductsPage() {
           <p className="text-muted-foreground">Manage your products and services.</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Product
+          <Button asChild>
+            <Link href="/business/products/add">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add Product
+            </Link>
           </Button>
         </div>
       </div>
@@ -51,7 +54,7 @@ export default function ProductsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/products/edit/1">Edit</Link></DropdownMenuItem>
                       <DropdownMenuItem>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -72,7 +75,7 @@ export default function ProductsPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link href="/business/products/edit/2">Edit</Link></DropdownMenuItem>
                       <DropdownMenuItem>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
