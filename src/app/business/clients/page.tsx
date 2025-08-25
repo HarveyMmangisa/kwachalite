@@ -96,3 +96,4 @@ export default function ClientsPage() {
   );
 }
 </DashboardLayout>
+</DashboardLayout>
