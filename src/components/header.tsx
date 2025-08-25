@@ -7,6 +7,7 @@ import { Menu, PlusCircle } from "lucide-react"
 import { Nav } from "./nav"
 import React from "react"
 import { SidebarTrigger } from "./ui/sidebar"
+import Link from "next/link"
 
 export default function Header() {
   return (
@@ -19,7 +20,29 @@ export default function Header() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="sm:max-w-xs">
-          <Nav />
+          <nav className="grid gap-6 text-lg font-medium">
+            <Link
+              href="#"
+              className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+            >
+               <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5 transition-all group-hover:scale-110"
+              >
+                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4Z" />
+              </svg>
+              <span className="sr-only">Kwacha Quick</span>
+            </Link>
+            <Nav />
+          </nav>
         </SheetContent>
       </Sheet>
       <div className="hidden md:block">

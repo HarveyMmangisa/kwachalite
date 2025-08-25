@@ -7,6 +7,8 @@ import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, Sideba
 import { cn } from "@/lib/utils"
 import * as React from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { useIsMobile } from "@/hooks/use-mobile"
+
 
 const mainNavItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -24,8 +26,56 @@ const businessNavItems = [
 
 export function Nav() {
   const pathname = usePathname()
-  const { open } = useSidebar()
+  const sidebar = useSidebar()
+  const isMobile = useIsMobile()
   const [isBusinessOpen, setIsBusinessOpen] = React.useState(pathname.startsWith('/business'));
+  
+  if (isMobile) {
+    return (
+        <>
+            {mainNavItems.map((item) => (
+                <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                    "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground",
+                    pathname === item.href && "text-foreground"
+                    )}
+                >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                </Link>
+            ))}
+             <Collapsible open={isBusinessOpen} onOpenChange={setIsBusinessOpen} className="flex flex-col gap-4">
+                <CollapsibleTrigger asChild>
+                    <div className={cn(
+                    "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground",
+                    pathname.startsWith("/business") && "text-foreground"
+                    )}>
+                        <Briefcase className="h-5 w-5" />
+                        Business
+                        <ChevronDown className={cn("ml-auto h-5 w-5 transition-transform", isBusinessOpen && "rotate-180")} />
+                    </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="flex flex-col gap-4 ml-7 data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
+                    {businessNavItems.map((item) => (
+                        <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                            "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground",
+                            pathname === item.href && "text-foreground"
+                        )}
+                        >
+                            <item.icon className="h-5 w-5" />
+                            {item.label}
+                        </Link>
+                    ))}
+                </CollapsibleContent>
+             </Collapsible>
+        </>
+    );
+  }
 
 
   return (
