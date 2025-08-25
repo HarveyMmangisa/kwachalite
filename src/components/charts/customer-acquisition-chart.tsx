@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -11,41 +12,23 @@ import {
   ChartLegendContent
 } from "@/components/ui/chart"
 
-const chartData = [
-  { channel: "Organic", customers: 320, fill: "var(--color-organic)" },
-  { channel: "Social", customers: 250, fill: "var(--color-social)" },
-  { channel: "Referral", customers: 180, fill: "var(--color-referral)" },
-  { channel: "Direct", customers: 150, fill: "var(--color-direct)" },
-  { channel: "Other", customers: 100, fill: "var(--color-other)" },
-]
+const chartData: { channel: string; customers: number; fill: string }[] = []
 
 const chartConfig = {
   customers: {
     label: "Customers",
   },
-  organic: {
-    label: "Organic",
-    color: "hsl(var(--chart-1))",
-  },
-  social: {
-    label: "Social Media",
-    color: "hsl(var(--chart-2))",
-  },
-  referral: {
-    label: "Referral",
-    color: "hsl(var(--chart-3))",
-  },
-  direct: {
-    label: "Direct",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
 }
 
 export default function CustomerAcquisitionChart() {
+    if (chartData.length === 0) {
+        return (
+            <div className="flex h-[300px] w-full items-center justify-center">
+                <p className="text-muted-foreground">No customer data to display.</p>
+            </div>
+        )
+    }
+
   return (
     <ChartContainer
       config={chartConfig}

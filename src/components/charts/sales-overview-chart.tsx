@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
@@ -11,12 +12,12 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-  { month: "January", sales: 4500, profit: 1200 },
-  { month: "February", sales: 5200, profit: 1800 },
-  { month: "March", sales: 6100, profit: 2200 },
-  { month: "April", sales: 4800, profit: 1500 },
-  { month: "May", sales: 7300, profit: 2800 },
-  { month: "June", sales: 6800, profit: 2500 },
+  { month: "January", sales: 0, profit: 0 },
+  { month: "February", sales: 0, profit: 0 },
+  { month: "March", sales: 0, profit: 0 },
+  { month: "April", sales: 0, profit: 0 },
+  { month: "May", sales: 0, profit: 0 },
+  { month: "June", sales: 0, profit: 0 },
 ]
 
 const chartConfig = {
@@ -31,6 +32,16 @@ const chartConfig = {
 }
 
 export default function SalesOverviewChart() {
+    const noData = chartData.every(item => item.sales === 0 && item.profit === 0);
+
+    if (noData) {
+        return (
+            <div className="flex h-[300px] w-full items-center justify-center">
+                <p className="text-muted-foreground">No sales data to display.</p>
+            </div>
+        )
+    }
+
   return (
     <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">

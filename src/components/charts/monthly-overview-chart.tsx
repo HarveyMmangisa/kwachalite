@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
@@ -9,14 +10,15 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
 const chartData = [
-  { month: "January", income: 1860, expense: 800 },
-  { month: "February", income: 3050, expense: 1980 },
-  { month: "March", income: 2370, expense: 1200 },
-  { month: "April", income: 730, expense: 1900 },
-  { month: "May", income: 2090, expense: 1300 },
-  { month: "June", income: 2140, expense: 1100 },
+  { month: "January", income: 0, expense: 0 },
+  { month: "February", income: 0, expense: 0 },
+  { month: "March", income: 0, expense: 0 },
+  { month: "April", income: 0, expense: 0 },
+  { month: "May", income: 0, expense: 0 },
+  { month: "June", income: 0, expense: 0 },
 ]
 
 const chartConfig = {
@@ -31,6 +33,15 @@ const chartConfig = {
 }
 
 export default function MonthlyOverviewChart() {
+    const noData = chartData.every(item => item.income === 0 && item.expense === 0);
+
+    if (noData) {
+        return (
+            <div className="flex h-[300px] w-full items-center justify-center">
+                <p className="text-muted-foreground">No data to display.</p>
+            </div>
+        )
+    }
   return (
     <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">

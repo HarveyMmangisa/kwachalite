@@ -11,11 +11,12 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { useEffect } from "react"
-import { getClient, updateClient } from "@/lib/db/clients"
+import { useEffect, useState } from "react"
+import { getClient, updateClient, Client } from "@/lib/db/clients"
 import { useRouter, useParams } from "next/navigation"
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth"
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -29,6 +30,9 @@ type ClientFormValues = z.infer<typeof clientFormSchema>
 export default function EditClientPage() {
     const params = useParams();
     const router = useRouter();
+    const { user } = useAuth();
+    const { toast } = useToast();
+    const [client, setClient] = useState<Client | null>(null);
   
     const form = useForm<ClientFormValues>({
         resolver: zodResolver(clientFormSchema),
@@ -41,26 +45,43 @@ export default function EditClientPage() {
     });
 
     useEffect(() => {
-        if (params.id) {
-            getClient(params.id as string).then(client => {
-                if (client) {
-                    form.reset(client);
+        if (user && params.id) {
+            getClient(user.uid, params.id as string).then(clientData => {
+                if (clientData) {
+                    setClient(clientData);
+                    form.reset(clientData);
+                } else {
+                    toast({
+                        title: "Error",
+                        description: "Client not found.",
+                        variant: "destructive",
+                    });
+                    router.push("/business/clients");
                 }
             })
         }
-    }, [params.id, form]);
+    }, [params.id, form, user, router, toast]);
 
-  const { toast } = useToast();
 
   async function onSubmit(data: ClientFormValues) {
-    if (params.id) {
-        await updateClient(params.id as string, data);
+    if (user && params.id) {
+        await updateClient(user.uid, params.id as string, data);
         toast({
           title: "Changes Saved",
           description: "Client details have been updated.",
         });
         router.push("/business/clients");
     }
+  }
+
+  if (!client) {
+    return (
+        <DashboardLayout>
+            <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
+                <p>Loading client...</p>
+            </div>
+        </DashboardLayout>
+    );
   }
 
   return (
@@ -151,6 +172,6 @@ export default function EditClientPage() {
         </CardContent>
       </Card>
     </div>
+  </DashboardLayout>
   )
 }
-</DashboardLayout>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -11,41 +12,22 @@ import {
   ChartLegendContent
 } from "@/components/ui/chart"
 
-const chartData = [
-  { category: "Food", expenses: 275, fill: "var(--color-food)" },
-  { category: "Transport", expenses: 200, fill: "var(--color-transport)" },
-  { category: "Housing", expenses: 320, fill: "var(--color-housing)" },
-  { category: "Entertainment", expenses: 175, fill: "var(--color-entertainment)" },
-  { category: "Other", expenses: 190, fill: "var(--color-other)" },
-]
+const chartData: { category: string; expenses: number; fill: string }[] = []
 
 const chartConfig = {
   expenses: {
     label: "Expenses",
   },
-  food: {
-    label: "Food",
-    color: "hsl(var(--chart-1))",
-  },
-  transport: {
-    label: "Transport",
-    color: "hsl(var(--chart-2))",
-  },
-  housing: {
-    label: "Housing",
-    color: "hsl(var(--chart-3))",
-  },
-  entertainment: {
-    label: "Entertainment",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
 }
 
 export default function ExpenseBreakdownChart() {
+    if (chartData.length === 0) {
+        return (
+            <div className="flex h-[300px] w-full items-center justify-center">
+                <p className="text-muted-foreground">No expense data to display.</p>
+            </div>
+        )
+    }
   return (
     <ChartContainer
       config={chartConfig}

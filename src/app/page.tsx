@@ -21,7 +21,11 @@ export default function Home() {
     }, [user, loading, router]);
 
     if (loading || !user) {
-        return <div>Loading...</div>
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div>Loading...</div>
+            </div>
+        );
     }
 
   return (
@@ -34,9 +38,9 @@ export default function Home() {
                 <Wallet className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">MWK 45,231.89</div>
+                <div className="text-2xl font-bold">MWK 0.00</div>
                 <p className="text-xs text-muted-foreground">
-                +20.1% from last month
+                No transactions yet
                 </p>
             </CardContent>
             </Card>
@@ -46,9 +50,9 @@ export default function Home() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+MWK 12,234.00</div>
+                <div className="text-2xl font-bold">+MWK 0.00</div>
                 <p className="text-xs text-muted-foreground">
-                +19% from last month
+                No income this month
                 </p>
             </CardContent>
             </Card>
@@ -58,9 +62,9 @@ export default function Home() {
                 <TrendingDown className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">-MWK 8,123.50</div>
+                <div className="text-2xl font-bold">-MWK 0.00</div>
                 <p className="text-xs text-muted-foreground">
-                +2% from last month
+                No expenses this month
                 </p>
             </CardContent>
             </Card>

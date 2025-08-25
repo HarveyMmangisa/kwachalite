@@ -1,5 +1,5 @@
 
-import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, DocumentReference } from "firebase/firestore";
 import { db } from "../firebase";
 
 export interface Client {
@@ -8,28 +8,33 @@ export interface Client {
     email: string;
     phone: string;
     status: "Active" | "Inactive";
+    userId: string;
 }
 
-export async function addClient(userId: string, client: Client) {
+function getClientsCollection(userId: string) {
+    return collection(db, "users", userId, "clients");
+}
+
+function getClientDoc(userId: string, clientId: string): DocumentReference {
+    return doc(db, "users", userId, "clients", clientId);
+}
+
+
+export async function addClient(userId: string, client: Omit<Client, 'id' | 'userId'>) {
     try {
-        await addDoc(collection(db, "users", userId, "clients"), client);
+        await addDoc(getClientsCollection(userId), { ...client, userId });
     } catch (error) {
         console.error("Error adding client: ", error);
     }
 }
 
 export async function getClients(userId: string): Promise<Client[]> {
-    const q = query(collection(db, "users", userId, "clients"));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(getClientsCollection(userId));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Client));
 }
 
-export async function getClient(clientId: string): Promise<Client | null> {
-    // This is not secure, as it doesn't check for user ID.
-    // In a real app, you would need to query within the user's collection.
-    // For simplicity, we're fetching directly. This needs to be improved.
-    const docRef = doc(db, "clients", clientId);
-    const docSnap = await getDoc(docRef);
+export async function getClient(userId: string, clientId: string): Promise<Client | null> {
+    const docSnap = await getDoc(getClientDoc(userId, clientId));
 
     if (docSnap.exists()) {
         return { id: docSnap.id, ...docSnap.data() } as Client;
@@ -38,14 +43,10 @@ export async function getClient(clientId: string): Promise<Client | null> {
     }
 }
 
-export async function updateClient(clientId: string, client: Partial<Client>) {
-     // This is not secure. See getClient comment.
-    const docRef = doc(db, "clients", clientId);
-    await updateDoc(docRef, client);
+export async function updateClient(userId: string, clientId: string, client: Partial<Client>) {
+    await updateDoc(getClientDoc(userId, clientId), client);
 }
 
-export async function deleteClient(clientId: string) {
-    // This is not secure. See getClient comment.
-    const docRef = doc(db, "clients", clientId);
-    await deleteDoc(docRef);
+export async function deleteClient(userId: string, clientId: string) {
+    await deleteDoc(getClientDoc(userId, clientId));
 }

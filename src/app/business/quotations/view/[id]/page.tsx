@@ -1,4 +1,6 @@
 
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,7 +12,9 @@ import { Separator } from "@/components/ui/separator";
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
+// Dummy data structure - replace with your actual data structure
 interface QuotationItem {
   name: string;
   description: string;
@@ -41,55 +45,49 @@ interface Quotation {
   company: CompanyInfo;
 }
 
-// Dummy function to simulate fetching quotation data
-const getQuotation = async (id: string): Promise<Quotation> => {
-  // In a real application, you would fetch this from a database or API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: id,
-        client: "John Doe",
-        clientAddress: "123 Main St, Anytown, USA",
-        date: "2024-07-29",
-        dueDate: "2024-08-28",
-        status: "Sent",
-        items: [
-          { name: "Web Design", description: "Responsive web design services", quantity: 1, price: 500000 },
-          { name: "Logo Design", description: "Custom logo design", quantity: 1, price: 150000 },
-        ],
-        subtotal: 650000,
-        tax: 107250,
-        total: 757250,
-        notes: "Thank you for your business!",
-        company: {
-            name: "Kwacha Quick Inc.",
-            address: "456 Tech Park, Zomba, Malawi",
-            email: "billing@kwachaquick.com",
-            logoUrl: "https://placehold.co/150x50.png",
-            termsAndConditions: "All services require a 50% deposit before work commences. The remaining balance is due upon completion."
-        }
-      });
-    }, 500); // Simulate network delay
-  });
+// Dummy function to simulate fetching quotation data - replace with actual data fetching
+const getQuotation = async (id: string): Promise<Quotation | null> => {
+  return null; // No hardcoded data
 };
 
-// @ts-ignore
-export default async function ViewQuotationPage({ params }: { params: { id: string } }) {
+export default function ViewQuotationPage() {
+  const params = useParams();
   const { toast } = useToast();
   const [quotation, setQuotation] = useState<Quotation | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (params.id) {
-      getQuotation(params.id).then(setQuotation);
+      getQuotation(params.id as string).then(data => {
+        setQuotation(data);
+        setLoading(false);
+      });
     }
   }, [params.id]);
 
-  if (!quotation) {
+  if (loading) {
     return (
       <DashboardLayout>
         <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
           <p>Loading quotation...</p>
         </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!quotation) {
+    return (
+        <DashboardLayout>
+            <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
+                 <div className="flex items-center">
+                    <Button asChild variant="outline" size="icon" className="mr-4">
+                        <Link href="/business/quotations">
+                            <ArrowLeft className="h-4 w-4" />
+                        </Link>
+                    </Button>
+                    <h2 className="text-3xl font-bold tracking-tight">Quotation Not Found</h2>
+                </div>
+            </div>
       </DashboardLayout>
     );
   }
@@ -119,8 +117,8 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
                     </Link>
                 </Button>
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Quotation #{quotation?.id}</h2>
-                    <p className="text-muted-foreground">Viewing quotation details for client {quotation?.client}.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Quotation #{quotation.id}</h2>
+                    <p className="text-muted-foreground">Viewing quotation details for client {quotation.client}.</p>
                 </div>
             </div>
             <div className="flex items-center gap-2">
@@ -133,19 +131,19 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
         <CardHeader className="p-0 mb-8">
             <div className="flex justify-between items-start">
                 <div>
-                    {quotation?.company.logoUrl && (
+                    {quotation.company.logoUrl && (
                         <div className="mb-4 relative h-12 w-36">
-                            <Image src={quotation?.company.logoUrl} alt={quotation?.company.name} layout="fill" objectFit="contain" data-ai-hint="logo" />
+                            <Image src={quotation.company.logoUrl} alt={quotation.company.name} layout="fill" objectFit="contain" data-ai-hint="logo" />
                         </div>
                     )}
-                    <h1 className="text-2xl font-bold text-primary">{quotation?.company.name}</h1>
-                    <p className="text-muted-foreground">{quotation?.company.address}</p>
-                    <p className="text-muted-foreground">{quotation?.company.email}</p>
+                    <h1 className="text-2xl font-bold text-primary">{quotation.company.name}</h1>
+                    <p className="text-muted-foreground">{quotation.company.address}</p>
+                    <p className="text-muted-foreground">{quotation.company.email}</p>
                 </div>
                 <div className="text-right">
                     <h2 className="text-3xl font-semibold">QUOTATION</h2>
-                    <p className="text-lg">#{quotation?.id}</p>
-                    <Badge className={`mt-2 ${quotation?.status === 'Sent' ? 'bg-blue-500' : 'bg-yellow-500'}`}>{quotation?.status}</Badge>
+                    <p className="text-lg">#{quotation.id}</p>
+                    <Badge className={`mt-2 ${quotation.status === 'Sent' ? 'bg-blue-500' : 'bg-yellow-500'}`}>{quotation.status}</Badge>
                 </div>
             </div>
         </CardHeader>
@@ -153,12 +151,12 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
             <div className="grid grid-cols-2 gap-4 mb-8">
                 <div>
                     <h3 className="font-semibold mb-2">Bill To:</h3>
-                    <p className="font-bold">{quotation?.client}</p>
-                    <p>{quotation?.clientAddress}</p>
+                    <p className="font-bold">{quotation.client}</p>
+                    <p>{quotation.clientAddress}</p>
                 </div>
                 <div className="text-right">
-                    <p><span className="font-semibold">Date:</span> {quotation?.date}</p>
-                    <p><span className="font-semibold">Due Date:</span> {quotation?.dueDate}</p>
+                    <p><span className="font-semibold">Date:</span> {quotation.date}</p>
+                    <p><span className="font-semibold">Due Date:</span> {quotation.dueDate}</p>
                 </div>
             </div>
 
@@ -173,7 +171,7 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
               </TableRow>
             </TableHeader>
             <TableBody>
-              {quotation?.items.map((item, index) => (
+              {quotation.items.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.description}</TableCell>
@@ -189,15 +187,15 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
             <div className="w-1/3 space-y-2">
                 <div className="flex justify-between">
                     <span className="font-semibold">Subtotal</span>
-                    <span>MWK {quotation?.subtotal.toLocaleString()}</span>
+                    <span>MWK {quotation.subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                     <span className="font-semibold">VAT (16.5%)</span>
-                    <span>MWK {quotation?.tax.toLocaleString()}</span>
+                    <span>MWK {quotation.tax.toLocaleString()}</span>
                 </div>
                  <div className="flex justify-between font-bold text-xl border-t pt-2">
                     <span>Total</span>
-                    <span>MWK {quotation?.total.toLocaleString()}</span>
+                    <span>MWK {quotation.total.toLocaleString()}</span>
                 </div>
             </div>
           </div>
@@ -206,17 +204,17 @@ export default async function ViewQuotationPage({ params }: { params: { id: stri
             <Separator className="mb-4" />
              <div className="w-full">
                 <h4 className="font-semibold mb-2">Notes</h4>
-                <p className="text-muted-foreground text-sm">{quotation?.notes}</p>
+                <p className="text-muted-foreground text-sm">{quotation.notes}</p>
             </div>
-            {quotation?.company.termsAndConditions && (
+            {quotation.company.termsAndConditions && (
                 <div className="w-full mt-4">
                     <h4 className="font-semibold mb-2">Terms & Conditions</h4>
-                    <p className="text-muted-foreground text-sm">{quotation?.company.termsAndConditions}</p>
+                    <p className="text-muted-foreground text-sm">{quotation.company.termsAndConditions}</p>
                 </div>
             )}
         </CardFooter>
       </Card>
     </div>
+  </DashboardLayout>
   );
 }
-</DashboardLayout>

@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import DashboardLayout from "@/components/dashboard-layout"
 
 const businessDetailsFormSchema = z.object({
   name: z.string().min(1, "Business name is required"),
@@ -28,12 +29,12 @@ export default function BusinessDetailsPage() {
   const form = useForm<BusinessDetailsFormValues>({
     resolver: zodResolver(businessDetailsFormSchema),
     defaultValues: {
-      name: "Kwacha Quick Inc.",
-      address: "456 Tech Park, Zomba, Malawi",
-      email: "billing@kwachaquick.com",
-      phone: "+265 1 234 567",
-      logoUrl: "https://placehold.co/150x50.png",
-      termsAndConditions: "All services require a 50% deposit before work commences. The remaining balance is due upon completion.",
+      name: "",
+      address: "",
+      email: "",
+      phone: "",
+      logoUrl: "",
+      termsAndConditions: "",
     },
   })
 
@@ -44,119 +45,121 @@ export default function BusinessDetailsPage() {
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
-      <div className="flex items-center">
-        <Button asChild variant="outline" size="icon" className="mr-4">
-          <Link href="/business">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Business Details</h2>
-          <p className="text-muted-foreground">Manage your company information for quotations and invoices.</p>
+    <DashboardLayout>
+        <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
+        <div className="flex items-center">
+            <Button asChild variant="outline" size="icon" className="mr-4">
+            <Link href="/business">
+                <ArrowLeft className="h-4 w-4" />
+            </Link>
+            </Button>
+            <div>
+            <h2 className="text-3xl font-bold tracking-tight">Business Details</h2>
+            <p className="text-muted-foreground">Manage your company information for quotations and invoices.</p>
+            </div>
         </div>
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Company Information</CardTitle>
-          <CardDescription>Update your business name, address, contact details, and logo.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Business Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your Company LLC" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="123 Business Rd, Suite 100" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card>
+            <CardHeader>
+            <CardTitle>Company Information</CardTitle>
+            <CardDescription>Update your business name, address, contact details, and logo.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="name"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Business Name</FormLabel>
                         <FormControl>
-                        <Input type="email" placeholder="contact@yourcompany.com" {...field} />
+                        <Input placeholder="Your Company LLC" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
-                 <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                        <Input placeholder="+1 (234) 567-890" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-               </div>
                 <FormField
                     control={form.control}
-                    name="logoUrl"
+                    name="address"
                     render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Logo URL</FormLabel>
+                        <FormLabel>Address</FormLabel>
                         <FormControl>
-                        <Input placeholder="https://yourcompany.com/logo.png" {...field} />
+                        <Textarea placeholder="123 Business Rd, Suite 100" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
-                {logoUrl && (
-                    <div className="flex flex-col space-y-2">
-                        <FormLabel>Logo Preview</FormLabel>
-                        <div className="w-48 h-24 relative bg-muted rounded-md flex items-center justify-center">
-                         <Image src={logoUrl} alt="Logo Preview" layout="fill" objectFit="contain" data-ai-hint="logo" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                            <Input type="email" placeholder="contact@yourcompany.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Phone</FormLabel>
+                            <FormControl>
+                            <Input placeholder="+1 (234) 567-890" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                </div>
+                    <FormField
+                        control={form.control}
+                        name="logoUrl"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Logo URL</FormLabel>
+                            <FormControl>
+                            <Input placeholder="https://yourcompany.com/logo.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    {logoUrl && (
+                        <div className="flex flex-col space-y-2">
+                            <FormLabel>Logo Preview</FormLabel>
+                            <div className="w-48 h-24 relative bg-muted rounded-md flex items-center justify-center">
+                            <Image src={logoUrl} alt="Logo Preview" layout="fill" objectFit="contain" data-ai-hint="logo" />
+                            </div>
                         </div>
-                    </div>
-                )}
-                <FormField
-                control={form.control}
-                name="termsAndConditions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Terms & Conditions</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Enter your terms and conditions or other notes for the quotation." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Save Details</Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+                    )}
+                    <FormField
+                    control={form.control}
+                    name="termsAndConditions"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Terms & Conditions</FormLabel>
+                        <FormControl>
+                        <Textarea placeholder="Enter your terms and conditions or other notes for the quotation." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <Button type="submit">Save Details</Button>
+                </form>
+            </Form>
+            </CardContent>
+        </Card>
+        </div>
+    </DashboardLayout>
   )
 }

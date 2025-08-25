@@ -16,30 +16,8 @@ import { useParams, useRouter } from "next/navigation"
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
-
-interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  type: "Product" | "Service";
-}
-
-// Dummy function to simulate fetching product data
-const getProduct = async (id: string): Promise<Product> => {
-  // In a real application, you would fetch this from a database or API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: id,
-        name: "Web Design",
-        description: "Responsive web design services",
-        price: 500000,
-        type: "Service",
-      });
-    }, 500); // Simulate network delay
-  });
-};
+import { Product, getProduct, updateProduct } from "@/lib/db/products"
+import { useAuth } from "@/hooks/use-auth"
 
 const productFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -51,25 +29,33 @@ const productFormSchema = z.object({
 type ProductFormValues = z.infer<typeof productFormSchema>
 
 export default function EditProductPage() {
-  const params = useParams()
+  const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
-
-  useEffect(() => {
-    if (params.id) {
-      getProduct(params.id as string).then(setProduct);
-    }
-  }, [params.id]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: product || undefined, // Set default values once product is loaded
   });
 
   useEffect(() => {
-    if (product) {
-      form.reset(product);
+    if (user && params.id) {
+      getProduct(user.uid, params.id as string).then(productData => {
+        if (productData) {
+          setProduct(productData);
+          form.reset(productData);
+        } else {
+          toast({
+            title: "Error",
+            description: "Product not found.",
+            variant: "destructive",
+          });
+          router.push("/business/products");
+        }
+      });
     }
-  }, [product, form]);
+  }, [params.id, form, user, router, toast]);
 
   if (!product) {
     return (
@@ -81,16 +67,15 @@ export default function EditProductPage() {
     );
   }
 
-  const router = useRouter();
-  const { toast } = useToast();
-
-  function onSubmit(data: ProductFormValues) {
-    console.log(data);
-    toast({
-      title: "Changes Saved",
-      description: "Product details have been updated.",
-    });
-    router.push("/business/products");
+  async function onSubmit(data: ProductFormValues) {
+    if (user && params.id) {
+        await updateProduct(user.uid, params.id as string, data);
+        toast({
+          title: "Changes Saved",
+          description: "Product details have been updated.",
+        });
+        router.push("/business/products");
+    }
   }
 
   return (
@@ -103,7 +88,7 @@ export default function EditProductPage() {
                 </Link>
             </Button>
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Edit Product {product.id}</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Edit Product</h2>
                 <p className="text-muted-foreground">Update the product or service details.</p>
             </div>
         </div>
@@ -160,7 +145,7 @@ export default function EditProductPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={product.type}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select type" />
@@ -181,6 +166,6 @@ export default function EditProductPage() {
         </CardContent>
       </Card>
     </div>
+  </DashboardLayout>
   )
 }
-</DashboardLayout>
