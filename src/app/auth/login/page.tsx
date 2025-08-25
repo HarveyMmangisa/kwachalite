@@ -12,6 +12,8 @@ import Link from "next/link"
 import { login } from "@/lib/auth"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
 
 const loginFormSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -23,6 +25,8 @@ type LoginFormValues = z.infer<typeof loginFormSchema>
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -74,7 +78,13 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="********" {...field} />
+                      <div className="relative">
+                        <Input type={showPassword ? "text" : "password"} placeholder="********" {...field} />
+                        <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3" onClick={() => setShowPassword(!showPassword)}>
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
