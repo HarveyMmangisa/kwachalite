@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Client, getClients } from "@/lib/db/clients";
 import { useAuth } from "@/hooks/use-auth";
 import { deleteClient } from "@/lib/db/clients";
+import DashboardLayout from "@/components/dashboard-layout";
 
 export default function ClientsPage() {
     const { user } = useAuth();
@@ -31,7 +32,8 @@ export default function ClientsPage() {
     }
 
   return (
-    <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
+    <DashboardLayout>
+      <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Clients</h2>

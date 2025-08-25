@@ -14,6 +14,8 @@ import { ArrowLeft } from "lucide-react"
 import { useEffect } from "react"
 import { getClient, updateClient } from "@/lib/db/clients"
 import { useRouter, useParams } from "next/navigation"
+import DashboardLayout from "@/components/dashboard-layout";
+import { useToast } from "@/hooks/use-toast";
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -48,15 +50,22 @@ export default function EditClientPage() {
         }
     }, [params.id, form]);
 
+  const { toast } = useToast();
+
   async function onSubmit(data: ClientFormValues) {
     if (params.id) {
         await updateClient(params.id as string, data);
+        toast({
+          title: "Changes Saved",
+          description: "Client details have been updated.",
+        });
         router.push("/business/clients");
     }
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
+    <DashboardLayout>
+      <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
        <div className="flex items-center">
         <Button asChild variant="outline" size="icon" className="mr-4">
             <Link href="/business/clients">
@@ -144,3 +153,4 @@ export default function EditClientPage() {
     </div>
   )
 }
+</DashboardLayout>
