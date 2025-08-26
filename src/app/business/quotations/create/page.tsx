@@ -17,11 +17,9 @@ import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { useAuth } from "@/hooks/use-auth"
-import { useEffect, useState } from "react"
-import { Client, getClients } from "@/lib/db/clients"
-import { Product, getProducts } from "@/lib/db/products"
 import DashboardLayout from "@/components/dashboard-layout"
+import { useClients } from "@/hooks/use-clients"
+import { useProducts } from "@/hooks/use-products"
 
 const quotationFormSchema = z.object({
   client: z.string().min(1, "Client is required"),
@@ -36,23 +34,8 @@ const quotationFormSchema = z.object({
 type QuotationFormValues = z.infer<typeof quotationFormSchema>
 
 export default function CreateQuotationPage() {
-  const { user } = useAuth();
-  const [clients, setClients] = useState<Client[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-      if (user) {
-          Promise.all([
-            getClients(user.uid),
-            getProducts(user.uid)
-          ]).then(([clientData, productData]) => {
-              setClients(clientData);
-              setProducts(productData);
-              setLoading(false);
-          })
-      }
-  }, [user]);
+  const { clients, loading: clientsLoading } = useClients();
+  const { products, loading: productsLoading } = useProducts();
 
   const form = useForm<QuotationFormValues>({
     resolver: zodResolver(quotationFormSchema),
@@ -78,8 +61,8 @@ export default function CreateQuotationPage() {
     console.log(data)
   }
 
-  if (loading) {
-      return <DashboardLayout><p>Loading...</p></DashboardLayout>
+  if (clientsLoading || productsLoading) {
+      return <DashboardLayout><div className="flex h-full w-full items-center justify-center p-8"><p>Loading data...</p></div></DashboardLayout>
   }
 
   return (

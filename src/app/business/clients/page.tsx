@@ -8,27 +8,21 @@ import { PlusCircle, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Client, getClients, deleteClient } from "@/lib/db/clients";
+import { useClients } from "@/hooks/use-clients";
+import { deleteClient } from "@/lib/db/clients";
 import { useAuth } from "@/hooks/use-auth";
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ClientsPage() {
     const { user } = useAuth();
-    const [clients, setClients] = useState<Client[]>([]);
+    const { clients, loading, refreshClients } = useClients();
     const { toast } = useToast();
-
-    useEffect(() => {
-        if (user) {
-            getClients(user.uid).then(setClients);
-        }
-    }, [user]);
 
     const handleDelete = async (id: string) => {
         if(user) {
             await deleteClient(user.uid, id);
-            setClients(clients.filter(c => c.id !== id));
+            await refreshClients();
             toast({
                 title: "Client Deleted",
                 description: "The client has been successfully deleted.",
@@ -69,7 +63,11 @@ export default function ClientsPage() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {clients.length > 0 ? (
+                    {loading ? (
+                         <TableRow>
+                            <TableCell colSpan={5} className="text-center">Loading clients...</TableCell>
+                        </TableRow>
+                    ) : clients.length > 0 ? (
                         clients.map(client => (
                             <TableRow key={client.id}>
                                 <TableCell className="font-medium">{client.name}</TableCell>

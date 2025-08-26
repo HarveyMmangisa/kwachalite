@@ -9,26 +9,20 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
-import { useEffect, useState } from "react";
-import { Product, getProducts, deleteProduct } from "@/lib/db/products";
+import { deleteProduct } from "@/lib/db/products";
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/use-products";
 
 export default function ProductsPage() {
   const { user } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
+  const { products, loading, refreshProducts } = useProducts();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (user) {
-      getProducts(user.uid).then(setProducts);
-    }
-  }, [user]);
 
   const handleDelete = async (id: string) => {
     if (user) {
       await deleteProduct(user.uid, id);
-      setProducts(products.filter(p => p.id !== id));
+      await refreshProducts();
       toast({
         title: "Product Deleted",
         description: "The product has been successfully deleted.",
@@ -69,7 +63,11 @@ export default function ProductsPage() {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {products.length > 0 ? (
+                {loading ? (
+                     <TableRow>
+                        <TableCell colSpan={5} className="text-center">Loading products...</TableCell>
+                    </TableRow>
+                ) : products.length > 0 ? (
                     products.map(product => (
                         <TableRow key={product.id}>
                             <TableCell className="font-medium">{product.name}</TableCell>
