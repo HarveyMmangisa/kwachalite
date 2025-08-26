@@ -8,7 +8,6 @@ export interface Product {
     description?: string;
     price: number;
     type: "Product" | "Service";
-    userId: string;
 }
 
 function getProductsCollection(userId: string) {
@@ -21,9 +20,10 @@ function getProductDoc(userId: string, productId: string): DocumentReference {
 
 export async function addProduct(userId: string, product: Omit<Product, 'id' | 'userId'>) {
     try {
-        await addDoc(getProductsCollection(userId), { ...product, userId });
+        await addDoc(getProductsCollection(userId), product);
     } catch (error) {
         console.error("Error adding product: ", error);
+        throw new Error("Failed to add product");
     }
 }
 

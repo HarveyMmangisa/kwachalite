@@ -1,5 +1,5 @@
 
-import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, DocumentReference } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, DocumentReference } from "firebase/firestore";
 import { db } from "../firebase";
 
 export interface Client {
@@ -8,7 +8,6 @@ export interface Client {
     email: string;
     phone: string;
     status: "Active" | "Inactive";
-    userId: string;
 }
 
 function getClientsCollection(userId: string) {
@@ -22,9 +21,10 @@ function getClientDoc(userId: string, clientId: string): DocumentReference {
 
 export async function addClient(userId: string, client: Omit<Client, 'id' | 'userId'>) {
     try {
-        await addDoc(getClientsCollection(userId), { ...client, userId });
+        await addDoc(getClientsCollection(userId), client);
     } catch (error) {
         console.error("Error adding client: ", error);
+        throw new Error("Failed to add client");
     }
 }
 
