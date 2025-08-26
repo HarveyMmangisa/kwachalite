@@ -50,6 +50,12 @@ export default function AddProductPage() {
         description: "New product has been successfully added.",
       });
       router.push("/business/products");
+    } else {
+        toast({
+            title: "Error",
+            description: "You must be logged in to add a product.",
+            variant: "destructive"
+        })
     }
   }
 

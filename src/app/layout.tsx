@@ -2,7 +2,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import DashboardLayout from '@/components/dashboard-layout';
 import { AuthProvider } from '@/hooks/use-auth';
 
 export const metadata: Metadata = {
@@ -24,9 +23,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background">
         <AuthProvider>
-            <div className="pb-24 md:pb-0">
-                {children}
-            </div>
+            {children}
         </AuthProvider>
         <Toaster />
       </body>

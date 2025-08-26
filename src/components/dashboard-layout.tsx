@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -155,10 +156,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 flex flex-col">
           <Header />
           <div className={cn(
-            "flex-1 p-4 md:p-6 lg:p-8", 
+            "flex-1", 
             isMobile && "pb-20" // Extra padding for mobile bottom navbar
           )}>
-            <div className="max-w-7xl mx-auto w-full">
+            <div className="w-full">
               {children}
             </div>
           </div>

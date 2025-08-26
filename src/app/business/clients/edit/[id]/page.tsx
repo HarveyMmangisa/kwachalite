@@ -33,6 +33,7 @@ export default function EditClientPage() {
     const { user } = useAuth();
     const { toast } = useToast();
     const [client, setClient] = useState<Client | null>(null);
+    const [loading, setLoading] = useState(true);
   
     const form = useForm<ClientFormValues>({
         resolver: zodResolver(clientFormSchema),
@@ -58,7 +59,9 @@ export default function EditClientPage() {
                     });
                     router.push("/business/clients");
                 }
-            })
+            }).finally(() => setLoading(false))
+        } else if (!user) {
+          router.push("/auth/login");
         }
     }, [params.id, form, user, router, toast]);
 
@@ -74,7 +77,7 @@ export default function EditClientPage() {
     }
   }
 
-  if (!client) {
+  if (loading) {
     return (
         <DashboardLayout>
             <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">

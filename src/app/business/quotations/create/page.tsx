@@ -39,11 +39,18 @@ export default function CreateQuotationPage() {
   const { user } = useAuth();
   const [clients, setClients] = useState<Client[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
       if (user) {
-          getClients(user.uid).then(setClients);
-          getProducts(user.uid).then(setProducts);
+          Promise.all([
+            getClients(user.uid),
+            getProducts(user.uid)
+          ]).then(([clientData, productData]) => {
+              setClients(clientData);
+              setProducts(productData);
+              setLoading(false);
+          })
       }
   }, [user]);
 
@@ -69,6 +76,10 @@ export default function CreateQuotationPage() {
 
   function onSubmit(data: QuotationFormValues) {
     console.log(data)
+  }
+
+  if (loading) {
+      return <DashboardLayout><p>Loading...</p></DashboardLayout>
   }
 
   return (

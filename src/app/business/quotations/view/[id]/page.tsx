@@ -12,7 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 
 // Dummy data structure - replace with your actual data structure
 interface QuotationItem {
@@ -46,7 +47,8 @@ interface Quotation {
 }
 
 // Dummy function to simulate fetching quotation data - replace with actual data fetching
-const getQuotation = async (id: string): Promise<Quotation | null> => {
+const getQuotation = async (userId: string, id: string): Promise<Quotation | null> => {
+  // This needs to be implemented with firestore
   return null; // No hardcoded data
 };
 
@@ -55,15 +57,20 @@ export default function ViewQuotationPage() {
   const { toast } = useToast();
   const [quotation, setQuotation] = useState<Quotation | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const router = useRouter();
+
 
   useEffect(() => {
-    if (params.id) {
-      getQuotation(params.id as string).then(data => {
+    if (user && params.id) {
+      getQuotation(user.uid, params.id as string).then(data => {
         setQuotation(data);
         setLoading(false);
       });
+    } else if (!user && !loading) {
+        router.push("/auth/login");
     }
-  }, [params.id]);
+  }, [params.id, user, loading, router]);
 
   if (loading) {
     return (

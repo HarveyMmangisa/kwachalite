@@ -13,6 +13,8 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import DashboardLayout from "@/components/dashboard-layout"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 const businessDetailsFormSchema = z.object({
   name: z.string().min(1, "Business name is required"),
@@ -26,6 +28,9 @@ const businessDetailsFormSchema = z.object({
 type BusinessDetailsFormValues = z.infer<typeof businessDetailsFormSchema>
 
 export default function BusinessDetailsPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
   const form = useForm<BusinessDetailsFormValues>({
     resolver: zodResolver(businessDetailsFormSchema),
     defaultValues: {
@@ -37,6 +42,15 @@ export default function BusinessDetailsPage() {
       termsAndConditions: "",
     },
   })
+
+  if (loading) {
+    return <DashboardLayout><p>Loading...</p></DashboardLayout>
+  }
+
+  if (!user) {
+    router.push('/auth/login');
+    return null;
+  }
 
   const logoUrl = form.watch("logoUrl");
 

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { z } from "zod";
@@ -13,8 +14,8 @@ import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { addClient } from "@/lib/db/clients";
 import { useRouter } from "next/navigation";
-import DashboardLayout from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
+import DashboardLayout from "@/components/dashboard-layout";
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -42,12 +43,20 @@ export default function AddClientPage() {
 
   async function onSubmit(data: ClientFormValues) {
     if (user) {
-      await addClient(user.uid, data);
-      toast({
-        title: "Client Added",
-        description: "New client has been successfully added.",
-      });
-      router.push("/business/clients");
+      try {
+        await addClient(user.uid, data);
+        toast({
+            title: "Client Added",
+            description: "New client has been successfully added.",
+        });
+        router.push("/business/clients");
+      } catch (error) {
+        toast({
+            title: "Error",
+            description: "Failed to add client. Please try again.",
+            variant: "destructive",
+        })
+      }
     }
   }
 

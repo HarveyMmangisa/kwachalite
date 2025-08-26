@@ -1,9 +1,26 @@
+
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import DashboardLayout from "@/components/dashboard-layout";
 import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
+    if (!user) {
+        router.push("/auth/login");
+        return null;
+    }
+
   return (
     <DashboardLayout>
       <div className="flex-1 space-y-6 p-6 sm:p-10 pt-8 bg-background">

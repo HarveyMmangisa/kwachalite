@@ -34,6 +34,7 @@ export default function EditProductPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -53,11 +54,13 @@ export default function EditProductPage() {
           });
           router.push("/business/products");
         }
-      });
+      }).finally(() => setLoading(false));
+    } else if (!user) {
+        router.push("/auth/login");
     }
   }, [params.id, form, user, router, toast]);
 
-  if (!product) {
+  if (loading) {
     return (
       <DashboardLayout>
         <div className="flex-1 space-y-4 p-4 sm:p-8 pt-6">
