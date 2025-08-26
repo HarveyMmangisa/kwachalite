@@ -26,7 +26,17 @@ if (typeof window !== 'undefined' && !getApps().length) {
     app = getApps()[0];
 }
 
-const auth = getAuth(app);
-const db = getFirestore(app);
+let auth;
+let db;
+
+if (typeof window !== 'undefined') {
+  if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    app = getApps()[0];
+  }
+  auth = getAuth(app);
+  db = getFirestore(app);
+}
 
 export { auth, db };
